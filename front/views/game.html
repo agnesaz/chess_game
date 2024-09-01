@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    {{> head}}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #myBoard {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #status, #moveHistory {
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        #leaveGameButton {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #leaveGameButton:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="myBoard" style="width: 700px;"></div>
+
+    <div id="statusContainer">
+        <label for="status">Status:</label>
+        <div id="status"></div>
+    </div>
+
+    <div id="moveHistoryContainer">
+        <label for="moveHistory">Game Move:</label>
+        <div id="moveHistory"></div>
+    </div>
+
+    <button id="leaveGameButton">Leave Game</button>
+
+    <script>
+        let playerColor = '{{color}}';
+        console.log('Playing as ' + playerColor);
+    </script>
+    <script src="/public/js/index.js"></script>
+
+</body>
+</html>

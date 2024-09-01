@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game Lobby</title>
+
+    <!-- Include jQuery and Socket.IO -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2,
+        h3 {
+            color: #2c3e50;
+        }
+
+        #codeInput {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 250px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #errorMessage {
+            color: red;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #challenge-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        #onlineUsers {
+            list-style: none;
+            padding: 0;
+            width: 300px;
+            margin: 0;
+        }
+
+        #onlineUsers li {
+            padding: 15px;
+            background-color: #ecf0f1;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        #onlineUsers li:hover {
+            background-color: #dde2e6;
+        }
+
+        #onlineUsers button {
+            background-color: #2ecc71;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #onlineUsers button:hover {
+            background-color: #27ae60;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            /* Adjust this value to increase/decrease spacing */
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="section">
+        <h2>Game Room Setup</h2>
+        <input type="text" id="codeInput" placeholder="Enter game code">
+        <button id="createGame">Create Game</button>
+        <button id="joinGame">Join Game</button>
+        <div id="errorMessage"></div>
+    </div>
+
+    <div id="challenge-modal">
+        <p id="challenge-message"></p>
+        <button id="accept-challenge">Accept</button>
+        <button id="reject-challenge">Reject</button>
+    </div>
+
+    <div class="section">
+        <h3>Online Users</h3>
+        <ul id="onlineUsers"></ul>
+    </div>
+
+    <script>
+        $('#createGame').on('click', function () {
+            window.location.replace('/white?code=' + $('#codeInput').val());
+        });
+
+        $('#joinGame').on('click', function () {
+            window.location.replace('/black?code=' + $('#codeInput').val());
+        });
+
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === 'invalidCode') {
+            $('#errorMessage').text('Invalid invite code');
+        }
+
+        var socket = io();
+
+        socket.on('updateUserList', function (users) {
+            const userListElement = $('#onlineUsers');
+            userListElement.empty();
+
+            users.forEach(user => {
+                console.log(user)
+                const li = $('<li></li>').text(user);
+                const challengeButton = $('<button></button>').text('Challenge').click(() => {
+                    const userName = user;
+                    socket.emit('challengeUser', { challengedUser: userName, gameCode: $('#codeInput').val() });
+                    alert(`Challenge has been sent to ${userName}.`);
+                });
+                li.append(challengeButton);
+                userListElement.append(li);
+            });
+        });
+
+        socket.on('challengeReceived', function (data) {
+            const { challenger, gameCode } = data;
+
+            document.getElementById('challenge-message').textContent = `${challenger} has challenged you. Accept?`;
+            const modal = document.getElementById('challenge-modal');
+            modal.style.display = 'block';
+
+            document.getElementById('accept-challenge').addEventListener('click', function () {
+                socket.emit('acceptChallenge', { gameCode });
+                modal.style.display = 'none';
+            });
+
+            document.getElementById('reject-challenge').addEventListener('click', function () {
+                socket.emit('rejectChallenge');
+                modal.style.display = 'none';
+            });
+        });
+
+        socket.on('challengeAccepted', function (data) {
+            const { roomCode, challengerName, opponentName } = data;
+
+            if (challengerName === onlineUsers[socket.id]) {
+                window.location.replace(`/white?code=${roomCode}`);
+            } else if (opponentName) {
+                window.location.replace(`/black?code=${roomCode}&opponent=${opponentName}`);
+            }
+        });
+
+        socket.on('challengeRejected', function () {
+            alert('Challenge rejected.');
+        });
+
+        socket.on('challengeError', function (data) {
+            alert(data.message);
+        });
+    </script>
+
+</body>
+
+</html>

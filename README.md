@@ -22,3 +22,54 @@ This is a real-time multiplayer chess game built with Node.js, Express, Socket.I
 - **`index.html`**: HTML template for the lobby where users can create or join games and view online players.
 - **`index.js` (client-side)**: JavaScript file for the client-side logic, including handling user interactions, game state updates, and Socket.IO events.
 
+
+## Installation
+
+**Clone the repository:**
+   git clone <git@github.com:agnesaz/chess_game.git>
+
+
+##  Install dependencies:
+    npm install
+
+##  Create a .env file in the root directory with the following content:
+    PORT=3000
+
+##  Run the application:
+    node index.js
+The server will start on http://localhost:3000.
+
+##  Usage
+
+1.  Open the application in your web browser.
+
+2. Create or Join a Game:
+    Enter a game code in the input field and click "Create Game" or "Join Game".
+    You will be redirected to the game page where you can play.
+
+3.  Challenge a Player:
+    From the lobby, click the "Challenge" button next to an online player’s name.
+
+4.  Respond to Challenges:
+    If you receive a challenge, a modal will appear allowing you to accept or reject it.
+
+5.  Play the Game:
+    Move pieces on the chessboard by dragging and dropping them.
+    The game status and move history will be updated in real time.
+
+6.  Leave a Game:
+    Click the "Leave Game" button if you want to exit the current game.
+
+##  Contributing
+    Feel free to fork the repository and submit pull requests. If you encounter any issues or have suggestions for improvement, please open an issue on GitHub.
+
+##  License
+    This project is licensed under the MIT License - see the LICENSE file for details.
+
+##  Acknowledgments
+    Chessboard.js for the chessboard UI.
+    Socket.IO for real-time communication.
+    Express for the web framework.
+
+
+Feel free to adjust any details as necessary for your specific needs!

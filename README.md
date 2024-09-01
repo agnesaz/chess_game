@@ -60,16 +60,8 @@ The server will start on http://localhost:3000.
 6.  Leave a Game:
     Click the "Leave Game" button if you want to exit the current game.
 
-##  Contributing
-    Feel free to fork the repository and submit pull requests. If you encounter any issues or have suggestions for improvement, please open an issue on GitHub.
-
-##  License
-    This project is licensed under the MIT License - see the LICENSE file for details.
 
 ##  Acknowledgments
     Chessboard.js for the chessboard UI.
     Socket.IO for real-time communication.
     Express for the web framework.
-
-
-Feel free to adjust any details as necessary for your specific needs!
